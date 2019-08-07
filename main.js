@@ -125,7 +125,7 @@ function gameOver() {
     ctx.globalAlpha = 1 / 2;
     drawScene();
     ctx.globalAlpha = 1;
-    ctx.font = "36px Comic Sans MS";
+    ctx.font = "36px Pangolin";
     ctx.textAlign = "center";
     ctx.fillStyle = "black";
     ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2);
@@ -142,7 +142,7 @@ function drawScene() {
     }
 
     for (var i in captions) {
-        ctx.font = "24px Comic Sans MS";
+        ctx.font = "24px Pangolin";
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
         ctx.fillText(captions[i].txt, captions[i].x, captions[i].y);
