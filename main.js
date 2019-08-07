@@ -79,6 +79,8 @@ function main() {
 
     canvas.addEventListener("mousedown", mousedown);
     canvas.addEventListener("mouseup", mouseup);
+    canvas.addEventListener("touchstart", touchstart);
+    canvas.addEventListener("touchend", touchend);
 
     levelTag = document.getElementById("level");
     scoreTag = document.getElementById("score");
@@ -227,6 +229,27 @@ function mousedown(evt) {
 
 function mouseup(evt) {
     if (getMousePos(evt) < canvas.width / 2) {
+        left = false;
+    } else {
+        right = false;
+    }
+}
+
+function getTouchPos(evt) {
+  var rect = canvas.getBoundingClientRect();
+  return evt.touches[0].clientX - rect.left;
+}
+
+function touchstart(evt) {
+    if (getTouchPos(evt) < canvas.width / 2) {
+        left = true;
+    } else {
+        right = true;
+    }
+}
+
+function touchend(evt) {
+    if (getTouchPos(evt) < canvas.width / 2) {
         left = false;
     } else {
         right = false;
