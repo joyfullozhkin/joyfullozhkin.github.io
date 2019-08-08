@@ -122,7 +122,10 @@ function drop(spoon) {
 }
 
 function gameOver() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 1 / 2;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     drawScene();
     ctx.globalAlpha = 1;
     ctx.font = "36px Pangolin";
@@ -132,9 +135,6 @@ function gameOver() {
 }
 
 function drawScene() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(backgroundImg, border, 0, canvas.width - 2 * border, canvas.height);
-
     ctx.drawImage(lozhkinImg, lozhkinShift, canvas.height - lozhkinSize, lozhkinSize, lozhkinSize);
 
     for (var i in spoons) {
@@ -150,6 +150,7 @@ function drawScene() {
 }
 
 function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawScene();
 
     timestamp = Date.now();
@@ -258,4 +259,5 @@ function touchend(evt) {
 
 document.addEventListener("keydown", keydown);
 document.addEventListener("keyup", keyup);
-document.addEventListener("DOMContentLoaded", main);
+
+$(main);
