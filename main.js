@@ -3,6 +3,8 @@
 var canvas;
 var ctx;
 
+var paused = true;
+var prevTimestamp;
 var timestamp;
 var redrawTimestamp;
 var spoonTimestamp;
@@ -26,13 +28,13 @@ var levelRate = 10000;
 var left = false;
 var right = false;
 
-var border = 120;
+var border = 0;
 
 var backgroundImg;
 
 var lozhkinImg;
 var lozhkinShift;
-var lozhkinSize = 120;
+var lozhkinSize = 110;
 
 var spoonUrls = [
     "spoon1.png",
@@ -41,7 +43,7 @@ var spoonUrls = [
 ];
 var spoonImages = [];
 var spoons = [];
-var spoonSize = 64;
+var spoonSize = 60;
 
 var phrases = [
     "Алло, это Ложкин!",
@@ -74,6 +76,16 @@ function randint(x, y) {
 }
 
 function main() {
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("keyup", keyup);
+
+    window.addEventListener("resize", checkWindow);
+    window.addEventListener("orientationchange", checkWindow);
+    document.addEventListener("fullscreenchange", checkWindow);
+    document.addEventListener("mozfullscreenchange", checkWindow);
+    document.addEventListener("webkitfullscreenchange", checkWindow);
+    document.addEventListener("msfullscreenchange", checkWindow);
+
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
 
@@ -81,11 +93,13 @@ function main() {
     canvas.addEventListener("mouseup", mouseup);
     canvas.addEventListener("touchstart", touchstart);
     canvas.addEventListener("touchend", touchend);
+    canvas.addEventListener("touchmove", touchmove);
 
     levelTag = document.getElementById("level");
     scoreTag = document.getElementById("score");
 
-    timestamp = Date.now();
+    timestamp = 0;
+    prevTimestamp = Date.now();
     redrawTimestamp = timestamp;
     spoonTimestamp = timestamp;
     levelTimestamp = timestamp;
@@ -106,6 +120,19 @@ function main() {
     spoons.push(new Spoon());
 
     window.requestAnimationFrame(draw);
+
+    checkWindow();
+}
+
+function startGame() {
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().then(function() {
+            screen.orientation.lock("landscape");
+            checkWindow();
+        })
+    } else {
+        checkWindow();
+    }
 }
 
 function intersect(spoon) {
@@ -135,7 +162,20 @@ function gameOver() {
 }
 
 function drawScene() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(lozhkinImg, lozhkinShift, canvas.height - lozhkinSize, lozhkinSize, lozhkinSize);
+
+    ctx.font = "24px Pangolin";
+    ctx.textAlign = "left";
+    ctx.fillStyle = "black";
+    ctx.fillText("Level: " + level, 8, 24);
+
+    ctx.font = "24px Pangolin";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "black";
+    ctx.fillText("Score: " + score, canvas.width - 8, 24);
 
     for (var i in spoons) {
         ctx.drawImage(spoons[i].img, spoons[i].x, spoons[i].y, spoonSize, spoonSize);
@@ -150,17 +190,21 @@ function drawScene() {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawScene();
+    if (!paused) {
+        timestamp += Date.now() - prevTimestamp;
+    }
+    prevTimestamp = Date.now();
 
-    timestamp = Date.now();
-    if (timestamp - redrawTimestamp > redrawRate) {
+    if (!paused) {
+        drawScene();
+    }
+
+    if (!paused && timestamp - redrawTimestamp > redrawRate) {
         redrawTimestamp = timestamp;
 
         if (timestamp - levelTimestamp > levelRate) {
             levelTimestamp = timestamp;
             ++level;
-            levelTag.innerHTML = "Level " + level;
             spoonScore += 10;
             spoonRate /= 1.2;
         }
@@ -180,7 +224,6 @@ function draw() {
                 captions.push(new Caption(spoons[i].x, spoons[i].y));
                 delete spoons[i];
                 score += spoonScore;
-                scoreTag.innerHTML = "Score: " + score;
             } else if (drop(spoons[i])) {
                 return gameOver();
             }
@@ -238,26 +281,55 @@ function mouseup(evt) {
 
 function getTouchPos(evt) {
   var rect = canvas.getBoundingClientRect();
-  return evt.touches[0].clientX - rect.left;
+  return (evt.touches[0] || event.changedTouches[0]).clientX - rect.left;
 }
 
 function touchstart(evt) {
-    if (getTouchPos(evt) < canvas.width / 2) {
+    if (getTouchPos(evt) < $(window).width() / 2) {
         left = true;
     } else {
         right = true;
     }
+    evt.preventDefault();
 }
 
 function touchend(evt) {
-    if (getTouchPos(evt) < canvas.width / 2) {
+    if (getTouchPos(evt) < $(window).width() / 2) {
         left = false;
     } else {
         right = false;
     }
+    evt.preventDefault();
 }
 
-document.addEventListener("keydown", keydown);
-document.addEventListener("keyup", keyup);
+function touchmove(evt) {
+    if (getTouchPos(evt) < $(window).width() / 2) {
+        left = true;
+        right = false;
+    } else {
+        left = false;
+        right = true;
+    }
+    evt.preventDefault();
+}
+
+function checkWindow() {
+    if ((window.orientation == 90 || window.orientation == -90) && document.fullscreenElement != null || document.documentElement.requestFullscreen == null) {
+        paused = false;
+        $("#overlay").hide();
+        $("#game").show();
+        if ($(window).width() / $(window).height() > 960.0 / 540.0) {
+            $("#myCanvas").height($(window).height());
+            $("#myCanvas").width($(window).height() * 960.0 / 540.0);
+        } else {
+            $("#myCanvas").width($(window).width());
+            $("#myCanvas").height($(window).width() * 540.0 / 960.0);
+        }
+    } else {
+        paused = true;
+        $("#game").hide();
+        $("#overlay").show();
+    }
+}
 
 $(main);

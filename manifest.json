@@ -1,0 +1,12 @@
+{
+  "name": "Весёлый Ложкин",
+  "short_name": "Весёлый Ложкин",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "lozhkin.png"
+    }
+  ]
+}

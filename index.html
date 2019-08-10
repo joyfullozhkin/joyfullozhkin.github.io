@@ -2,19 +2,32 @@
 <html>
     <head>
         <title>Весёлый Ложкин</title>
+
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="Весёлый Ложкин">
+        <meta name="apple-mobile-web-app-title" content="Весёлый Ложкин">
+        <meta name="msapplication-starturl" content="/">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no">
+
         <link rel="icon" type="image/png" href="lozhkin.png">
-        <link href="normalize.css" rel="stylesheet">
-        <link href="style.css" rel="stylesheet">
+        <link rel="apple-touch-icon" type="image/png" href="lozhkin.png">
+        <link rel="manifest" href="manifest.json?v=1.0">
+
+        <link rel="stylesheet" href="normalize.css?v=1.0">
+        <link rel="stylesheet" href="style.css?v=1.0">
+
         <script src="jquery-3.4.1.slim.min.js"></script>
-        <script src="main.js"></script>
+        <script src="main.js?v=1.0"></script>
     </head>
     <body>
-        <h1 id="level" style="padding-left: 540px;">Level 1</h1>
-        <br>
-        <canvas id="myCanvas" width="1200" height="540"></canvas>
-        <br>
-        <h1 id="score" style="padding-left: 540px;">Score: 0</h1>
+        <div id="game" style="display: none; text-align: center;">
+            <canvas id="myCanvas" width="960" height="540"></canvas>
+        </div>
+        <div id="overlay" style="display: none; text-align: center;">
+            <img src="lozhkin.png"><br>
+            <button onclick="startGame();" style="font-size: 24px;">Play</button>
+        </div>
     </body>
 </html>
