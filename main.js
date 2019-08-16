@@ -19,7 +19,6 @@ var level = 1;
 
 var redrawRate = 10;
 var spoonRate = 2000;
-var spoonRateStep = 100;
 var lozhkinVelocity = 15;
 var spoonVelocity = 3;
 var captionVelocity = 3;
@@ -104,6 +103,14 @@ function main() {
     spoonTimestamp = timestamp;
     levelTimestamp = timestamp;
 
+    score = 0;
+    level = 1;
+    spoonRate = 2000;
+    left = false;
+    right = false;
+    spoons = [];
+    captions = [];
+
     lozhkinShift = (canvas.width - lozhkinSize) / 2;
 
     backgroundImg = new Image();
@@ -155,10 +162,19 @@ function gameOver() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     drawScene();
     ctx.globalAlpha = 1;
+
     ctx.font = "36px Pangolin";
     ctx.textAlign = "center";
     ctx.fillStyle = "black";
-    ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2);
+    ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2 - 24);
+
+    ctx.font = "24px Pangolin";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+    ctx.fillText("Click to restart", canvas.width / 2, canvas.height / 2 + 24);
+
+    canvas.addEventListener("mousedown", main);
+    canvas.addEventListener("touchstart", main);
 }
 
 function drawScene() {

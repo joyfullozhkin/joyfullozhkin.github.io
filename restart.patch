@@ -1,0 +1,78 @@
+diff --git a/main.js b/main.js
+index eef9744..5160201 100644
+--- a/main.js
++++ b/main.js
+@@ -19,7 +19,6 @@ var level = 1;
+ 
+ var redrawRate = 10;
+ var spoonRate = 2000;
+-var spoonRateStep = 100;
+ var lozhkinVelocity = 15;
+ var spoonVelocity = 3;
+ var captionVelocity = 3;
+@@ -104,6 +103,14 @@ function main() {
+     spoonTimestamp = timestamp;
+     levelTimestamp = timestamp;
+ 
++    score = 0;
++    level = 1;
++    spoonRate = 2000;
++    left = false;
++    right = false;
++    spoons = [];
++    captions = [];
++
+     lozhkinShift = (canvas.width - lozhkinSize) / 2;
+ 
+     backgroundImg = new Image();
+@@ -155,10 +162,19 @@ function gameOver() {
+     ctx.fillRect(0, 0, canvas.width, canvas.height);
+     drawScene();
+     ctx.globalAlpha = 1;
++
+     ctx.font = "36px Pangolin";
+     ctx.textAlign = "center";
+     ctx.fillStyle = "black";
+-    ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2);
++    ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2 - 24);
++
++    ctx.font = "24px Pangolin";
++    ctx.textAlign = "center";
++    ctx.fillStyle = "black";
++    ctx.fillText("Click to restart", canvas.width / 2, canvas.height / 2 + 24);
++
++    canvas.addEventListener("mousedown", main);
++    canvas.addEventListener("touchstart", main);
+ }
+ 
+ function drawScene() {
+diff --git a/pangolin.woff2 b/pangolin.woff2
+deleted file mode 100644
+index 6a87b01..0000000
+Binary files a/pangolin.woff2 and /dev/null differ
+diff --git a/style.css b/style.css
+index 1a99f55..a088b14 100644
+--- a/style.css
++++ b/style.css
+@@ -1,9 +1,20 @@
++/* latin */
+ @font-face {
+     font-family: 'Pangolin';
+     font-style: normal;
+     font-weight: 400;
+     font-display: swap;
+-    src: local('Pangolin Regular'), local('Pangolin-Regular'), url(pangolin.woff2) format('woff2');
++    src: local('Pangolin Regular'), local('Pangolin-Regular'), url(pangolin_latin.woff2) format('woff2');
++    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++
++/* cyrillic */
++@font-face {
++    font-family: 'Pangolin';
++    font-style: normal;
++    font-weight: 400;
++    font-display: swap;
++    src: local('Pangolin Regular'), local('Pangolin-Regular'), url(pangolin_cyrillic.woff2) format('woff2');
+     unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+ }
+ 
