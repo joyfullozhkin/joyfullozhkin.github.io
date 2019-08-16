@@ -75,6 +75,9 @@ function randint(x, y) {
 }
 
 function main() {
+    canvas = document.getElementById("myCanvas");
+    ctx = canvas.getContext("2d");
+
     canvas.removeEventListener("mousedown", main);
     canvas.removeEventListener("touchstart", main);
 
@@ -87,9 +90,6 @@ function main() {
     document.addEventListener("mozfullscreenchange", checkWindow);
     document.addEventListener("webkitfullscreenchange", checkWindow);
     document.addEventListener("msfullscreenchange", checkWindow);
-
-    canvas = document.getElementById("myCanvas");
-    ctx = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", mousedown);
     canvas.addEventListener("mouseup", mouseup);
