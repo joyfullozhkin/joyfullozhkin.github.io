@@ -107,6 +107,7 @@ function main() {
     levelTimestamp = timestamp;
 
     score = 0;
+    spoonScore = 10;
     level = 1;
     spoonRate = 2000;
     left = false;
