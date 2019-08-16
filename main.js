@@ -78,8 +78,8 @@ function main() {
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
 
-    canvas.removeEventListener("mousedown", main);
-    canvas.removeEventListener("touchstart", main);
+    canvas.removeEventListener("mousedown", mouseRestart);
+    canvas.removeEventListener("touchstart", touchRestart);
 
     document.addEventListener("keydown", keydown);
     document.addEventListener("keyup", keyup);
@@ -171,13 +171,35 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2 - 24);
 
+    setTimeout(suggestRestart, 1000);
+}
+
+function suggestRestart() {
     ctx.font = "24px Pangolin";
     ctx.textAlign = "center";
     ctx.fillStyle = "black";
     ctx.fillText("Click to restart", canvas.width / 2, canvas.height / 2 + 24);
 
-    canvas.addEventListener("mousedown", main);
-    canvas.addEventListener("touchstart", main);
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(canvas.width / 2 - 80, canvas.height / 2, 160, 32);
+
+    canvas.addEventListener("mousedown", mouseRestart);
+    canvas.addEventListener("touchstart", touchRestart);
+}
+
+function mouseRestart(evt) {
+    if (
+        getMousePos(evt).x > canvas.width / 2 - 80 &&
+        getMousePos(evt).x < canvas.width / 2 + 80 &&
+        getMousePos(evt).y > canvas.height / 2 &&
+        getMousePos(evt).y < canvas.height / 2 + 32
+    ) {
+        main();
+    }
+}
+
+function touchRestart(evt) {
+    evt.preventDefault();
 }
 
 function drawScene() {
@@ -279,11 +301,14 @@ function keyup(evt) {
 
 function getMousePos(evt) {
     var rect = canvas.getBoundingClientRect();
-    return evt.clientX - rect.left;
+    return {
+        x: (evt.clientX - rect.left) / rect.width * canvas.width,
+        y: (evt.clientY - rect.top) / rect.height * canvas.height,
+    };
 }
 
 function mousedown(evt) {
-    if (getMousePos(evt) < canvas.width / 2) {
+    if (getMousePos(evt).x < canvas.width / 2) {
         left = true;
     } else {
         right = true;
@@ -291,7 +316,7 @@ function mousedown(evt) {
 }
 
 function mouseup(evt) {
-    if (getMousePos(evt) < canvas.width / 2) {
+    if (getMousePos(evt).x < canvas.width / 2) {
         left = false;
     } else {
         right = false;
@@ -299,12 +324,16 @@ function mouseup(evt) {
 }
 
 function getTouchPos(evt) {
-  var rect = canvas.getBoundingClientRect();
-  return (evt.touches[0] || event.changedTouches[0]).clientX - rect.left;
+    var touch = evt.touches[0] || evt.changedTouches[0];
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: (touch.clientX - rect.left) / rect.width * canvas.width,
+        y: (touch.clientY - rect.top) / rect.height * canvas.height,
+    };
 }
 
 function touchstart(evt) {
-    if (getTouchPos(evt) < $(window).width() / 2) {
+    if (getTouchPos(evt).x < canvas.width / 2) {
         left = true;
     } else {
         right = true;
@@ -313,7 +342,7 @@ function touchstart(evt) {
 }
 
 function touchend(evt) {
-    if (getTouchPos(evt) < $(window).width() / 2) {
+    if (getTouchPos(evt).x < canvas.width / 2) {
         left = false;
     } else {
         right = false;
@@ -322,7 +351,7 @@ function touchend(evt) {
 }
 
 function touchmove(evt) {
-    if (getTouchPos(evt) < $(window).width() / 2) {
+    if (getTouchPos(evt).x < canvas.width / 2) {
         left = true;
         right = false;
     } else {
