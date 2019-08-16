@@ -171,7 +171,7 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.fillText("ОЦЕНКА АСИМПТОТИЧЕСКИ НЕТОЧНА!", canvas.width / 2, canvas.height / 2 - 24);
 
-    setTimeout(suggestRestart, 1000);
+    setTimeout(suggestRestart, 500);
 }
 
 function suggestRestart() {
@@ -200,6 +200,14 @@ function mouseRestart(evt) {
 
 function touchRestart(evt) {
     evt.preventDefault();
+    if (
+        getTouchPos(evt).x > canvas.width / 2 - 80 &&
+        getTouchPos(evt).x < canvas.width / 2 + 80 &&
+        getTouchPos(evt).y > canvas.height / 2 &&
+        getTouchPos(evt).y < canvas.height / 2 + 32
+    ) {
+        main();
+    }
 }
 
 function drawScene() {
